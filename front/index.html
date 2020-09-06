@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Html</title>
+</head>
+
+<body>
+    <h1>Subida de fotos con cloudinary</h1>
+
+    <form action="http://localhost:3000/new-image" enctype="multipart/form-data" method="POST">
+
+        <input type="text" name="name_car" placeholder="Nombre del auto"><br>
+        <input type="text" name="model" placeholder="Modelo"><br>
+        <input type="text" name="description" placeholder="Descrption"><br>
+
+        <input type="number" name="price" placeholder="precio"><br>
+
+        <input type="file" name="myImage" />
+
+        <br>
+        <input type="submit" value="Enviar">
+    </form>
+
+    <div class="cards-images" id="cars_cards"></div>
+
+    <script src="main.js"></script>
+</body>
+
+</html>
