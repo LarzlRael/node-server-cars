@@ -21,3 +21,5 @@ create table user(
     rol varchar(250) default 'user',
     enable boolean default true
 );
+
+ALTER TABLE user ADD COLUMN google boolean default false;

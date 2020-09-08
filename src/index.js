@@ -12,7 +12,7 @@ const login = require('./routes/login');
 require('dotenv').config()
 
 //? settings 
-app.set('view engine','ejs');
+
 app.set('port', process.env.PORT || 3000);
 app.use(cors())
 app.set(morgan('dev'));
@@ -34,9 +34,7 @@ app.use(multer({ storage }).single('myImage'));
 //? rutas para consultar el cloud
 app.use(cloud_routes);
 
-app.use('/',(req,res)=>{
-    res.render('index')
-})
+
 // ? rutas para los usuarios
 app.use('/users', user);
 app.use('/login',login);

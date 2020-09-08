@@ -4,29 +4,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Html</title>
+    <meta name="google-signin-client_id"
+        content="865863604763-eul4q7i109a0bhac463gu28amo5u7645.apps.googleusercontent.com">
+    <title>Document</title>
 </head>
 
 <body>
-    <h1>Subida de fotos con cloudinary</h1>
 
-    <form action="http://localhost:3000/new-image" enctype="multipart/form-data" method="POST">
 
-        <input type="text" name="name_car" placeholder="Nombre del auto"><br>
-        <input type="text" name="model" placeholder="Modelo"><br>
-        <input type="text" name="description" placeholder="Descrption"><br>
 
-        <input type="number" name="price" placeholder="precio"><br>
 
-        <input type="file" name="myImage" />
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
 
-        <br>
-        <input type="submit" value="Enviar">
-    </form>
+    <div class="g-signin2" data-onsuccess="onSignIn"></div>
 
-    <div class="cards-images" id="cars_cards"></div>
+    <script>function onSignIn(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+            console.log('Name: ' + profile.getName());
+            console.log('Image URL: ' + profile.getImageUrl());
+            console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+            let id_token = googleUser.getAuthResponse().id_token;
+            console.log(id_token);
+        }
+    </script>
 
-    <script src="main.js"></script>
+
+    <a href="#" onclick="signOut();">Sign out</a>
+    <script>
+        function signOut() {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+                console.log('User signed out.');
+            });
+        }
+    </script>
+
+
+
 </body>
 
 </html>
