@@ -19,7 +19,8 @@ create table user(
     image varchar(250) default '',
     direccion varchar(250),
     rol varchar(250) default 'user',
-    enable boolean default true
+    enable boolean default true,
+    google boolean default false
 );
 
-ALTER TABLE user ADD COLUMN google boolean default false;
+--ALTER TABLE user ADD COLUMN google boolean default false;

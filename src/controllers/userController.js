@@ -11,7 +11,7 @@ controller.allUsers = async (req, res) => {
     try {
         const conn = await getConnection();
         //? convirtiendo a decimal
-        const resultado = await conn.query("Select * from car ")
+        const resultado = await conn.query("Select id_user,name,last_name,email,image,direccion,rol,email,google from user ")
 
         if (resultado.length == 0) {
             return res.json({ rows: 'no hay xd' });

@@ -1,16 +1,16 @@
 
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
-
+require('dotenv').config()
 
 const { getConnection } = require('../database/database');
 
 const controller = {};
 
 cloudinary.config({
-    cloud_name: '',
-    api_key: '',
-    api_secret: ''
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_KEY_SECRET
 });
 
 
@@ -34,11 +34,6 @@ controller.allCars = async (req, res) => {
 }
 // ? Metodo para añadir un nuevo carro con subida de fotos
 controller.insertNewCar = async (req, res) => {
-    // try{
-    //     const conn = await getConnection();
-    //     const resultado = await conn.query("Insert into ......")
-    //     return res.json({})
-    // }
 
     const {
         name_car,
@@ -54,7 +49,6 @@ controller.insertNewCar = async (req, res) => {
         folder: 'cars'
     });
 
-    console.log(result)
     const newCar = {
         name_car,
         price,
@@ -63,19 +57,16 @@ controller.insertNewCar = async (req, res) => {
         public_id: result.public_id,
         year,
     }
-
-    //? donde se se va grabar el archivo (luego esto va ser una base de datos)
+    //Guardando en la base de datos
     try {
         const conn = await getConnection();
         await conn.query("insert into car set ? ", [newCar])
 
     }
     catch (error) {
-        //eturn res.json({ error: 'Hubo un error en la inser' })
-        res.send(error)
+        res.json({ error })
 
     }
-
 
     try {
         await fs.unlink(req.file.path, (err) => {
@@ -86,15 +77,15 @@ controller.insertNewCar = async (req, res) => {
         console.log('archivo elimnado pero guardado')
 
     } catch (error) {
-        console.log(error)
+        res.status(403).json({error});
     }
 
 
     return res.status(200).json({ ok: 'Nuevo Carro insertado correctamente' })
 
 
-
 }
+//? metodo para poder elimiar un carro
 
 controller.deleteCar = async (req, res) => {
 
@@ -104,14 +95,11 @@ controller.deleteCar = async (req, res) => {
         const conn = await getConnection();
         //? eliminando de la base de datos
         await conn.query("DELETE FROM car WHERE id = ? ", id)
-        // ? Eliminando de cloudinary
-
 
     }
     catch (error) {
-        //eturn res.json({ error: 'Hubo un error en la inser' })
-        res.send(error)
-
+        //return res.json({ error: 'Hubo un error en la insertar' })
+        res.status(500).send({error})
     }
 
     try {
@@ -119,7 +107,6 @@ controller.deleteCar = async (req, res) => {
         return res.status(200).json({ 'deleted': true })
     } catch (error) {
         return res.status(200).json({ 'deleted': false, error })
-
     }
 }
 

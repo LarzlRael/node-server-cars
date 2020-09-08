@@ -14,7 +14,7 @@ router.post('/', controller.login);
 
 
 
-
+//? rutas para google
 router.post('/google', controller.google);
 
 

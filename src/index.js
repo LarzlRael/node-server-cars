@@ -34,14 +34,11 @@ app.use(multer({ storage }).single('myImage'));
 //? rutas para consultar el cloud
 app.use(cloud_routes);
 
-
 // ? rutas para los usuarios
 app.use('/users', user);
 app.use('/login',login);
 
 //? public files
-
-app.use(express.static(path.join(__dirname,'public')));
 
 //? listening the server
 app.listen(app.get('port'), () => {

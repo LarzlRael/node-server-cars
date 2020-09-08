@@ -10,15 +10,14 @@ const { getConnection } = require("../database/database");
 
 const controller = {};
 
-// Login 
+//? Login email and password
 controller.login = async (req, res) => {
 
     const conn = await getConnection();
 
     const { email, password } = req.body;
-    const result = await conn.query('SELECT * FROM user WHERE email = ?', email);
+    const result = await conn.query('SELECT * FROM user WHERE email = ? limit 1', email);
 
-    console.log(result)
 
     if (result.length !== 0) {
         if (bcrypt.compareSync(password, result[0].password)) {
@@ -49,6 +48,7 @@ controller.login = async (req, res) => {
     }
 
 }
+//? Login google
 
 controller.google = async (req, res) => {
     const conn = await getConnection();
@@ -56,7 +56,7 @@ controller.google = async (req, res) => {
     let { token } = req.body;
     try {
         let googleUser = await verify(token);
-        const result = await conn.query("SELECT * FROM user WHERE email = ?", googleUser.email);
+        const result = await conn.query("SELECT * FROM user WHERE email = ? limit 1", googleUser.email);
 
         if (result.length !== 0) {
             console.log('usuario ya existe')
