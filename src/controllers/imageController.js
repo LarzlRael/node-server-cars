@@ -2,9 +2,9 @@
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
 require('dotenv').config()
+const { validationResult } = require('express-validator');
 
 const { getConnection } = require('../database/database');
-
 const controller = {};
 
 cloudinary.config({
@@ -35,11 +35,18 @@ controller.allCars = async (req, res) => {
 // ? Metodo para añadir un nuevo carro con subida de fotos
 controller.insertNewCar = async (req, res) => {
 
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     const {
         name_car,
         price,
         description,
-        year,
+        model,
+        status,
+        maker
     } = req.body;
 
     //?    si quieres ver al info descomentar esto
@@ -55,7 +62,9 @@ controller.insertNewCar = async (req, res) => {
         description,
         imageURL: result.url,
         public_id: result.public_id,
-        year,
+        model,
+        status,
+        maker
     }
     //Guardando en la base de datos
     try {
@@ -65,7 +74,6 @@ controller.insertNewCar = async (req, res) => {
     }
     catch (error) {
         res.json({ error })
-
     }
 
     try {
@@ -77,15 +85,33 @@ controller.insertNewCar = async (req, res) => {
         console.log('archivo elimnado pero guardado')
 
     } catch (error) {
-        res.status(403).json({error});
+        res.status(403).json({ error });
     }
 
 
     return res.status(200).json({ ok: 'Nuevo Carro insertado correctamente' })
-
-
 }
-//? metodo para poder elimiar un carro
+
+//? Funcion para obtener un carro
+controller.getOneCar = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const conn = await getConnection();
+        //? Obtener un carro
+        const cars = await conn.query("SELECT * FROM  car WHERE id = ? limit 1" , id)
+        if (cars.length == 0) {
+            return res.status(200).json({ message: 'No hay nada que mostrar' })
+
+        }
+        return res.status(200).json({ cars })
+    }
+    catch (error) {
+        //return res.json({ error: 'Hubo un error en la insertar' })
+        res.status(500).send({ error })
+    }
+}
+//? metodo para poder eliminar un carro
 
 controller.deleteCar = async (req, res) => {
 
@@ -99,7 +125,7 @@ controller.deleteCar = async (req, res) => {
     }
     catch (error) {
         //return res.json({ error: 'Hubo un error en la insertar' })
-        res.status(500).send({error})
+        res.status(500).send({ error })
     }
 
     try {

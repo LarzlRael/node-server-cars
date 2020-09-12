@@ -1,7 +1,9 @@
 const { Router } = require('express');
 const router = Router();
-const { verificateToken } = require('../middlewares/jwtVerification')
 
+const { body } = require('express-validator');
+
+const { verificateToken } = require('../middlewares/jwtVerification')
 const controller = require('../controllers/imageController');
 
 
@@ -17,12 +19,20 @@ router.get('/getImages', (req, res) => {
     return res.json(cars)
 })
 
+router.get('/getImage/:id',controller.getOneCar)
 //* rutas Post 
 
-router.post('/new-image', verificateToken, controller.insertNewCar)
+router.post('/new-image', [
+    body('price').isNumeric().withMessage('Ingresa un numero'),
+    body('name_car').isLength({ min: 5 }).withMessage('Nombre muy corto'),
+    body('model').notEmpty().withMessage('Ingresa un año'),
+    body('maker').notEmpty().withMessage('Ingresa de que marca es este vehiculo'),
+    body('status').notEmpty().withMessage('Ingresa el estado')
+
+    , verificateToken], controller.insertNewCar)
 
 //* rutas Delete
 
-router.delete('/deleteImage/:id/:public_id', controller.deleteCar)
+router.delete('/deleteImage/:id/:public_id', [verificateToken], controller.deleteCar)
 
 module.exports = router;

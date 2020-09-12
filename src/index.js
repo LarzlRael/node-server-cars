@@ -13,7 +13,7 @@ require('dotenv').config()
 
 //? settings 
 
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 5000);
 app.use(cors())
 app.set(morgan('dev'));
 app.use(express.json())

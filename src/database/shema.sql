@@ -5,9 +5,11 @@ create table car(
     name_car varchar(50) not null,
     price int not null,
     description varchar(50),
-    imageURL varchar(250),
-    public_id  varchar(250),
-    year varchar(10)
+    imageURL varchar(250) not null,
+    public_id  varchar(250) not null,
+    model varchar(10) not null,
+    status varchar (10) not null,
+    maker varchar(55) not null
 );
 
 create table user(
@@ -20,7 +22,8 @@ create table user(
     direccion varchar(250),
     rol varchar(250) default 'user',
     enable boolean default true,
-    google boolean default false
+    google boolean default false,
+    
 );
 
 --ALTER TABLE user ADD COLUMN google boolean default false;

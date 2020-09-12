@@ -1,5 +1,6 @@
 
-var bcrypt = require('bcryptjs');
+const bcrypt = require('bcryptjs');
+const { validationResult } = require('express-validator');
 
 const { getConnection } = require("../database/database");
 
@@ -10,15 +11,13 @@ controller.allUsers = async (req, res) => {
 
     try {
         const conn = await getConnection();
-        //? convirtiendo a decimal
         const resultado = await conn.query("Select id_user,name,last_name,email,image,direccion,rol,email,google from user ")
 
         if (resultado.length == 0) {
-            return res.json({ rows: 'no hay xd' });
+            return res.json({ rows: 'Registros 0' });
 
         }
         return res.json(resultado);
-
 
     } catch (error) {
         console.log(error)
@@ -27,6 +26,11 @@ controller.allUsers = async (req, res) => {
 
 //? para poder user nuevo usuario
 controller.newuser = async (req, res) => {
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
 
     const conn = await getConnection();
 
