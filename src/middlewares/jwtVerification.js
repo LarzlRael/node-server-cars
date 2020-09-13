@@ -17,7 +17,7 @@ let verificateToken = (req, res, next) => {
             })
         }
         //? en esta parte se crea un req los datos del usuario
-        req.usuario = decoded.usuario;
+        req.user = decoded.usuario;
 
         next();
     })

@@ -13,25 +13,34 @@ const controller = {};
 //? Login email and password
 controller.login = async (req, res) => {
 
+
     const conn = await getConnection();
 
     const { email, password } = req.body;
+    console.log(email, password)
     const result = await conn.query('SELECT * FROM user WHERE email = ? limit 1', email);
 
 
     if (result.length !== 0) {
+
+        if (result[0].google) {
+            return res.status(400).json({
+                ok: false,
+                message: 'Usa tu cuenta de google'
+            })
+        }
+
+
         if (bcrypt.compareSync(password, result[0].password)) {
             delete result[0].password;
-            // return res.json(result[0]);
-            const userdb = result[0];
 
+            const userdb = result[0];
             const token = jwt.sign({ usuario: userdb }, process.env.SEED, {
                 expiresIn: 14400
             })
             return res.status(200).json({
                 ok: true,
                 token,
-                userdb,
                 id: userdb.id_user,
                 //menu: obtenerMenu(userdb.role)
             })
@@ -40,30 +49,51 @@ controller.login = async (req, res) => {
 
         } else {
             // console.log('error de contraseña')
-            res.json({ error: 'email o contraseña no valido' });
+            res.status(400).json({ error: 'email o contraseña no valido' });
         }
     } else {
-        //console.log('el usuario no existe');
-        res.status(500).json({ error: 'Server Error' });
+
+        //res.status(500).json({ error: 'Server Error' });
+        res.status(400).json({ error: 'email o contraseña no valido' });
+
     }
 
 }
+controller.getUser = async (req, res) => {
+
+    //console.log(req.user.id_user)
+    try {
+        const conn = await getConnection();
+
+        const user_db = await conn.query('SELECT * FROM user WHERE id_user = ? LIMIT 1', req.user.id_user);
+        delete user_db[0].password;
+        res.json(user_db[0]);
+
+    } catch (error) {
+        res.status(500).json({ msg: 'Hubo un error' });
+    }
+}
+
+
 //? Login google
 
 controller.google = async (req, res) => {
     const conn = await getConnection();
 
     let { token } = req.body;
+    let result;
     try {
         let googleUser = await verify(token);
-        const result = await conn.query("SELECT * FROM user WHERE email = ? limit 1", googleUser.email);
+        result = await conn.query("SELECT * FROM user WHERE email = ? limit 1", googleUser.email);
 
         if (result.length !== 0) {
             console.log('usuario ya existe')
         }
         else {
-            console.log('no existe este cliente', result)
+
             await conn.query('INSERT INTO user SET ? ', [googleUser]);
+            result = await conn.query("SELECT * FROM user WHERE email = ? limit 1", googleUser.email)
+
         }
 
         //return res.status(200).json({ ok: true, googleuser: googleUser });

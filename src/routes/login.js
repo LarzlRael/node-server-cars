@@ -2,16 +2,13 @@ const { Router } = require('express');
 
 const router = Router();
 
-const { OAuth2Client } = require('google-auth-library');
-const client = new OAuth2Client(process.env.GOOGLE_ID_CLIENT);
-
-
-const controller = require('../controllers/login_controller')
+const controller = require('../controllers/login_controller');
+const { verificateToken } = require('../middlewares/jwtVerification');
 
 //? Rutas bajo el /login
 router.post('/', controller.login);
 
-
+router.get('/getuser', verificateToken, controller.getUser)
 
 
 //? rutas para google
