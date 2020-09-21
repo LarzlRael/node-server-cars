@@ -15,7 +15,7 @@ require('dotenv').config()
 
 app.set('port', process.env.PORT || 5000);
 app.use(cors())
-app.set(morgan('dev'));
+app.use(morgan('dev'));
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }));
 

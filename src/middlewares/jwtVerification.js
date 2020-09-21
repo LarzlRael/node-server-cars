@@ -23,7 +23,25 @@ let verificateToken = (req, res, next) => {
     })
 }
 
+let verificaRolAdmin = (req, res, next) => {
+
+    let {user} = req;
+    console.log(user);
+
+
+    if (user.role === 'ADMIN_ROLE') {
+        next();
+    } else {
+        return res.status(400).json({
+            ok: false,
+            err: {
+                message: 'no puedes hacer esta operacion'
+            }
+        })
+    }
+
+}
 
 
 
-module.exports = { verificateToken };
+module.exports = { verificateToken,verificaRolAdmin };

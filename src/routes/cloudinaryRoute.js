@@ -20,12 +20,17 @@ router.get('/getImages', (req, res) => {
 })
 
 router.get('/getImage/:id',controller.getOneCar)
+
+
+router.get('/find/:field/:query',controller.findCar);
+
 //* rutas Post 
+
 
 router.post('/new-image', [
     body('price').isNumeric().withMessage('Ingresa un numero'),
     body('name_car').isLength({ min: 5 }).withMessage('Nombre muy corto'),
-    body('model').notEmpty().withMessage('Ingresa un año'),
+    body('model').notEmpty().withMessage('Ingrese un modelo del auto'),
     body('maker').notEmpty().withMessage('Ingresa de que marca es este vehiculo'),
     body('status').notEmpty().withMessage('Ingresa el estado')
 

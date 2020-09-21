@@ -18,8 +18,7 @@ controller.login = async (req, res) => {
 
     const { email, password } = req.body;
     console.log(email, password)
-    const result = await conn.query('SELECT * FROM user WHERE email = ? limit 1', email);
-
+    const result = await conn.query('SELECT * FROM user WHERE email = ? AND enable = 1 limit 1', email);
 
     if (result.length !== 0) {
 
@@ -32,16 +31,19 @@ controller.login = async (req, res) => {
 
 
         if (bcrypt.compareSync(password, result[0].password)) {
+
             delete result[0].password;
 
             const userdb = result[0];
+
             const token = jwt.sign({ usuario: userdb }, process.env.SEED, {
                 expiresIn: 14400
             })
             return res.status(200).json({
                 ok: true,
                 token,
-                id: userdb.id_user,
+                id: userdb.id_user
+                
                 //menu: obtenerMenu(userdb.role)
             })
             // TODO crear el menu para mostrar al usuario
@@ -66,8 +68,8 @@ controller.getUser = async (req, res) => {
         const conn = await getConnection();
 
         const user_db = await conn.query('SELECT * FROM user WHERE id_user = ? LIMIT 1', req.user.id_user);
+
         delete user_db[0].password;
-        res.json(user_db[0]);
 
     } catch (error) {
         res.status(500).json({ msg: 'Hubo un error' });
@@ -141,3 +143,5 @@ async function verify(token) {
 }
 
 module.exports = controller;
+
+

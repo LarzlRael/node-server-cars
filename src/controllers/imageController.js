@@ -13,7 +13,6 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_KEY_SECRET
 });
 
-
 controller.allCars = async (req, res) => {
 
     try {
@@ -92,6 +91,31 @@ controller.insertNewCar = async (req, res) => {
     return res.status(200).json({ ok: 'Nuevo Carro insertado correctamente' })
 }
 
+//? funcion para buscar un carro por algun tipo de parametro
+
+
+controller.findCar = async (req, res) => {
+    const { query, field } = req.params;
+    console.log(query, field)
+    try {
+        const conn = await getConnection();
+        //? Obtener un carro
+        const cars = await conn.query(`SELECT * FROM car WHERE ${field} LIKE '%${query}%'`).catch(e=>{
+            console.log(e)
+        });
+        
+        if (cars.length == 0) {
+            return res.status(200).json({ message: 'No se encontraron registros' })
+
+        }
+        return res.status(200).json({ cars })
+    }
+    catch (error) {
+        //return res.json({ error: 'Hubo un error en la insertar' })
+        res.status(500).json({error:'hubo un error'})
+    }
+}
+
 //? Funcion para obtener un carro
 controller.getOneCar = async (req, res) => {
     const { id } = req.params;
@@ -99,7 +123,7 @@ controller.getOneCar = async (req, res) => {
     try {
         const conn = await getConnection();
         //? Obtener un carro
-        const cars = await conn.query("SELECT * FROM  car WHERE id = ? limit 1" , id)
+        const cars = await conn.query("SELECT * FROM  car WHERE id = ? limit 1", id)
         if (cars.length == 0) {
             return res.status(200).json({ message: 'No hay nada que mostrar' })
 

@@ -7,17 +7,52 @@ const { getConnection } = require("../database/database");
 
 const controller = {};
 
+//? get all users (only admin users)
 controller.allUsers = async (req, res) => {
 
     try {
         const conn = await getConnection();
-        const resultado = await conn.query("Select id_user,name,last_name,email,image,direccion,rol,email,google from user ")
+        const resultado = await conn.query("Select id_user,name,last_name,email,image,direccion,role,email,google from user ")
 
         if (resultado.length == 0) {
             return res.json({ rows: 'Registros 0' });
 
         }
         return res.json(resultado);
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+controller.findUser = async (req, res) => {
+
+    const {field,query} = req.params;
+    try {
+        const conn = await getConnection();
+        const users = await conn.query(`Select id_user,name,last_name,email,image,direccion,role,email,google FROM user WHERE ${field} LIKE '%${query}%';`);
+
+        if (users.length == 0) {
+            return res.json({ rows: 'Registros 0' });
+
+        }
+        return res.json(users);
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+controller.enableOrDisableUser = async (req, res) => {
+
+    const { id,enableOrDisable } = req.params;
+    
+    console.log(id)
+    try {
+        const conn = await getConnection();
+        const resultado = await conn.query("UPDATE user set enable = ? WHERE id_user = ?",[enableOrDisable,id]);
+
+        
+        return res.json({user:'user updated'});
 
     } catch (error) {
         console.log(error)
