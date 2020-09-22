@@ -63,13 +63,18 @@ controller.login = async (req, res) => {
 }
 controller.getUser = async (req, res) => {
 
-    //console.log(req.user.id_user)
+    console.log(req.user.id_user)
     try {
         const conn = await getConnection();
 
-        const user_db = await conn.query('SELECT * FROM user WHERE id_user = ? LIMIT 1', req.user.id_user);
-
+        const user_db = await conn.query('SELECT * FROM user WHERE id_user = ? LIMIT 1', req.user.id_user).catch(e => console.log(e));
+        console.log(user_db[0])
         delete user_db[0].password;
+
+        return res.status(200).json({
+            ok: true,
+            userdb:user_db[0]
+        })
 
     } catch (error) {
         res.status(500).json({ msg: 'Hubo un error' });
@@ -87,14 +92,14 @@ controller.google = async (req, res) => {
     let result;
     try {
         console.log('google user ')
-        let googleUser = await verify(token).catch(e=>console.log(e));
+        let googleUser = await verify(token).catch(e => console.log(e));
 
 
 
         result = await conn.query("SELECT * FROM user WHERE email = ? limit 1", googleUser.email)
-        .catch(e => {
-            console.log(e)
-        });
+            .catch(e => {
+                console.log(e)
+            });
 
         if (result.length !== 0) {
             console.log('usuario ya existe')
@@ -134,17 +139,17 @@ controller.google = async (req, res) => {
 
 async function verify(token) {
     //    console.log(token)
-    
+
     const ticket = await client.verifyIdToken({
         idToken: token,
         audience: process.env.GOOGLE_ID_CLIENT,  // Specify the CLIENT_ID of the app that accesses the backend
         // Or, if multiple clients access the backend:
-        
+
         //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
     });
 
     const payload = ticket.getPayload();
-    
+
     //const userid = payload['sub'];
     // If request specified a G Suite domain:
     // const domain = payload['hd'];

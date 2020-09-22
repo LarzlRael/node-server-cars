@@ -8,7 +8,7 @@ const { verificateToken } = require('../middlewares/jwtVerification');
 //? Rutas bajo el /login
 router.post('/', controller.login);
 
-router.get('/getuser', verificateToken, controller.getUser)
+router.get('/getuser', verificateToken, controller.getUser);
 
 
 //? rutas para google
