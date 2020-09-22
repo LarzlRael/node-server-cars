@@ -20,9 +20,9 @@ create table user(
     password varchar(100) not null,
     image varchar(250) default '',
     direccion varchar(250),
-    rol varchar(250) default 'user',
+    role varchar(250) default 'user',
     enable boolean default true,
-    google boolean default false,
+    google boolean default false
     
 );
 

@@ -43,7 +43,7 @@ controller.login = async (req, res) => {
                 ok: true,
                 token,
                 id: userdb.id_user
-                
+
                 //menu: obtenerMenu(userdb.role)
             })
             // TODO crear el menu para mostrar al usuario
@@ -80,21 +80,33 @@ controller.getUser = async (req, res) => {
 //? Login google
 
 controller.google = async (req, res) => {
+
     const conn = await getConnection();
 
     let { token } = req.body;
     let result;
     try {
-        let googleUser = await verify(token);
-        result = await conn.query("SELECT * FROM user WHERE email = ? limit 1", googleUser.email);
+        console.log('google user ')
+        let googleUser = await verify(token).catch(e=>console.log(e));
+
+
+
+        result = await conn.query("SELECT * FROM user WHERE email = ? limit 1", googleUser.email)
+        .catch(e => {
+            console.log(e)
+        });
 
         if (result.length !== 0) {
             console.log('usuario ya existe')
         }
         else {
 
-            await conn.query('INSERT INTO user SET ? ', [googleUser]);
-            result = await conn.query("SELECT * FROM user WHERE email = ? limit 1", googleUser.email)
+            await conn.query('INSERT INTO user SET ? ', [googleUser]).catch(e => {
+                console.log(e)
+            });;
+            result = await conn.query("SELECT * FROM user WHERE email = ? limit 1", googleUser.email).catch(e => {
+                console.log(e)
+            });
 
         }
 
@@ -121,13 +133,18 @@ controller.google = async (req, res) => {
 //? funcio para verficar el token de gogole para compararlo
 
 async function verify(token) {
+    //    console.log(token)
+    
     const ticket = await client.verifyIdToken({
         idToken: token,
         audience: process.env.GOOGLE_ID_CLIENT,  // Specify the CLIENT_ID of the app that accesses the backend
         // Or, if multiple clients access the backend:
+        
         //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
     });
+
     const payload = ticket.getPayload();
+    
     //const userid = payload['sub'];
     // If request specified a G Suite domain:
     // const domain = payload['hd'];
