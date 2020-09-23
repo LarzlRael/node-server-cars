@@ -26,7 +26,7 @@ controller.allUsers = async (req, res) => {
 }
 controller.findUser = async (req, res) => {
 
-    const {field,query} = req.params;
+    const { field, query } = req.params;
     try {
         const conn = await getConnection();
         const users = await conn.query(`Select id_user,name,last_name,email,image,direccion,role,email,google FROM user WHERE ${field} LIKE '%${query}%';`);
@@ -44,15 +44,15 @@ controller.findUser = async (req, res) => {
 
 controller.enableOrDisableUser = async (req, res) => {
 
-    const { id,enableOrDisable } = req.params;
-    
+    const { id, enableOrDisable } = req.params;
+
     console.log(id)
     try {
         const conn = await getConnection();
-        const resultado = await conn.query("UPDATE user set enable = ? WHERE id_user = ?",[enableOrDisable,id]);
+        const resultado = await conn.query("UPDATE user set enable = ? WHERE id_user = ?", [enableOrDisable, id]);
 
-        
-        return res.json({user:'user updated'});
+
+        return res.json({ user: 'user updated' });
 
     } catch (error) {
         console.log(error)
@@ -86,10 +86,12 @@ controller.newuser = async (req, res) => {
     }
     const verifyUser = await conn.query('SELECT * FROM user WHERE email = ?', email);
     // TODO ver esta comparacion
-    if (verifyUser.length !== 0) {
 
-        return res.json({ userExists: true, error: `El email ${email} ya fue registrado ` });
+    if (verifyUser.length !== 0) {
+        return res.status(400).json({ userExists: true, error: `El email ${email} ya fue registrado ` });
     }
+    
+
 
     try {
 
