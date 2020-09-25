@@ -1,8 +1,7 @@
 
 const bcrypt = require('bcryptjs');
-const { validationResult } = require('express-validator');
-
 const { getConnection } = require("../database/database");
+const { validationResult } = require('express-validator');
 
 
 const controller = {};
@@ -90,8 +89,6 @@ controller.newuser = async (req, res) => {
     if (verifyUser.length !== 0) {
         return res.status(400).json({ userExists: true, error: `El email ${email} ya fue registrado ` });
     }
-    
-
 
     try {
 
