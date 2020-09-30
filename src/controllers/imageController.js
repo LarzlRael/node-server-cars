@@ -95,25 +95,33 @@ controller.insertNewCar = async (req, res) => {
 
 
 controller.findCar = async (req, res) => {
-    const { query, field } = req.params;
+    const { query = '', field } = req.params;
     console.log(query, field)
     try {
         const conn = await getConnection();
         //? Obtener un carro
-        const cars = await conn.query(`SELECT * FROM car WHERE ${field} LIKE '%${query}%'`).catch(e=>{
+        const cars = await conn.query(`SELECT * FROM car WHERE ${field} LIKE '%${query}%'`).catch(e => {
             console.log(e)
         });
-        
+
         if (cars.length == 0) {
-            return res.status(200).json({ message: 'No se encontraron registros' })
+            return res.status(200).json({ cars: [], message: 'No se encontraron registros' })
 
         }
         return res.status(200).json({ cars })
     }
     catch (error) {
         //return res.json({ error: 'Hubo un error en la insertar' })
-        res.status(500).json({error:'hubo un error'})
+        res.status(500).json({ error: 'hubo un error' })
     }
+}
+
+controller.findEmpyCar = async (req, res) => {
+
+    const conn = await getConnection();
+    const cars = await conn.query("SELECT * FROM car ")
+    return res.status(200).json({ cars, message: 'No se encontraron registros' })
+
 }
 
 //? Funcion para obtener un carro

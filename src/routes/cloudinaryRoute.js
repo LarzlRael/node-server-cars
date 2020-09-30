@@ -22,7 +22,9 @@ router.get('/getImages', (req, res) => {
 router.get('/getImage/:id',controller.getOneCar)
 
 
+router.get('/find/:field',controller.findEmpyCar);
 router.get('/find/:field/:query',controller.findCar);
+
 
 //* rutas Post 
 

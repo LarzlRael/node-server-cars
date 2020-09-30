@@ -14,6 +14,9 @@ router.get('/getuser', verificateToken, controller.getUser);
 
 router.post('/loginadmin',controllerAdmin.loginAdmin)
 
+router.get('/getadminuser', verificateToken, controllerAdmin.getUserAdmin);
+
+
 //? rutas para google
 router.post('/google', controller.google);
 

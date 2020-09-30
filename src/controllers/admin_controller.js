@@ -22,7 +22,7 @@ controller.loginAdmin = async (req, res) => {
 
             delete result[0].password;
 
-            const userdb = result[0];
+                const userdb = result[0];
 
             const token = jwt.sign({ usuario: userdb }, process.env.SEED, {
                 expiresIn: 14400
@@ -44,6 +44,28 @@ controller.loginAdmin = async (req, res) => {
     } else {
         res.status(500).json({ error: 'Email o contraseña no valido' });
     }
-
 }
+//? get Admin User
+controller.getUserAdmin = async (req, res) => {
+
+    console.log(req.user.id_user)
+    try {
+        const conn = await getConnection();
+
+        const user_db = await conn.query('SELECT * FROM user WHERE id_user = ? AND ROLE = "ADMIN_ROLE" LIMIT 1 ', req.user.id_user).catch(e => console.log(e));
+
+        console.log(user_db[0])
+
+        delete user_db[0].password;
+
+        return res.status(200).json({
+            ok: true,
+            userdb:user_db[0]
+        })
+
+    } catch (error) {
+        res.status(500).json({ msg: 'Hubo un error' });
+    }
+}
+
 module.exports = controller;    

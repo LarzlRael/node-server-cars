@@ -44,4 +44,5 @@ let verificaRolAdmin = (req, res, next) => {
 
 
 
+
 module.exports = { verificateToken,verificaRolAdmin };
