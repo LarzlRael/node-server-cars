@@ -21,11 +21,10 @@ controller.allCars = async (req, res) => {
         const resultado = await conn.query("Select * from car ")
 
         if (resultado.length == 0) {
-            return res.json({ rows: 'no hay xd' });
+            return res.json({ cars: [], rows: 'No hay registros' });
 
         }
-        return res.json(resultado);
-
+        return res.json({ cars: resultado,rows:'Hay registros' });
 
     } catch (error) {
         console.log(error)

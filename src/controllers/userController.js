@@ -11,11 +11,10 @@ controller.allUsers = async (req, res) => {
 
     try {
         const conn = await getConnection();
-        const resultado = await conn.query("Select id_user,name,last_name,email,image,direccion,role,email,google from user ")
+        const resultado = await conn.query("Select id_user,name,last_name,email,image,direccion,role,email,google from user ORDER BY role LIMIT 5 ")
 
         if (resultado.length == 0) {
             return res.json({ rows: 'Registros 0' });
-
         }
         return res.json(resultado);
 
