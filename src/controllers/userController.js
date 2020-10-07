@@ -9,14 +9,21 @@ const controller = {};
 //? get all users (only admin users)
 controller.allUsers = async (req, res) => {
 
+    let { from, to } = req.params;
+    from = parseInt(from);
+    to = parseInt(to);
+
     try {
         const conn = await getConnection();
-        const resultado = await conn.query("Select id_user,name,last_name,email,image,direccion,role,email,google from user ORDER BY role LIMIT 5 ")
+
+        const count = await conn.query("select count(id_user) as count from user;");
+
+        const resultado = await conn.query("Select id_user,name,last_name,email,direccion,email,google,image from user where role ='NORMAL_USER' ORDER BY id_user DESC LIMIT ?, ? ;", [from, to]);
 
         if (resultado.length == 0) {
             return res.json({ rows: 'Registros 0' });
         }
-        return res.json(resultado);
+        return res.json({ rows: resultado, count });
 
     } catch (error) {
         console.log(error)
@@ -24,16 +31,16 @@ controller.allUsers = async (req, res) => {
 }
 controller.findUser = async (req, res) => {
 
-    const { field, query } = req.params;
+    const { query } = req.params;
     try {
         const conn = await getConnection();
-        const users = await conn.query(`Select id_user,name,last_name,email,image,direccion,role,email,google FROM user WHERE ${field} LIKE '%${query}%';`);
+        const users = await conn.query(`Select id_user,name,last_name,email,image,direccion,email,google FROM user WHERE email LIKE '%${query}%';`);
 
         if (users.length == 0) {
-            return res.json({ rows: 'Registros 0' });
+            return res.json({ rows: [], message: 'Registros 0' });
 
         }
-        return res.json(users);
+        return res.json({ rows: users });
 
     } catch (error) {
         console.log(error)

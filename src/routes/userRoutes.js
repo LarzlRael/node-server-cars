@@ -11,20 +11,25 @@ const USER_ADMIN_ROLE = [verificateToken, verificaRolAdmin];
 
 //! usar esta direccion para las siguientes consultas /users
 
+//? all routes working with /users
+
 //? rutas get
-router.get('/', 
-    USER_ADMIN_ROLE, controller.allUsers);
+
 
 //* for enable or disable users (admin)
 router.get('/updateuser/:id/:enableOrDisable',
     USER_ADMIN_ROLE,
     controller.enableOrDisableUser);
 
-    
-//? obtener usuarios
-router.get('/finduser/:field/:query',
-    USER_ADMIN_ROLE,
-    controller.findUser);
+
+//* for find user by name (admin)
+router.get('/search/:query',
+    USER_ADMIN_ROLE, controller.findUser);
+
+//? for to find from to
+router.get('/:from/:to',
+    USER_ADMIN_ROLE, controller.allUsers);
+
 
 
 
