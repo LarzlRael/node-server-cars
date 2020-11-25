@@ -32,10 +32,8 @@ router.get('/find/:field/:query',controller.findCar);
 router.post('/new-image', [
     body('price').isNumeric().withMessage('Ingresa un numero'),
     body('name_car').isLength({ min: 5 }).withMessage('Nombre muy corto'),
-    body('model').notEmpty().withMessage('Ingrese un modelo del auto'),
     body('maker').notEmpty().withMessage('Ingresa de que marca es este vehiculo'),
     body('status').notEmpty().withMessage('Ingresa el estado')
-
     , verificateToken], controller.insertNewCar)
 
 //* rutas Delete

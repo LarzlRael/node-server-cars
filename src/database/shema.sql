@@ -13,14 +13,14 @@ create table car(
 );
 
 create table user(
-    id_user int primary key auto_increment,
+    id_user  int primary key auto_increment,
     name varchar(100) not null,
     last_name varchar(100) not null,
     email varchar(100) not null unique,
     password varchar(100) not null,
     image varchar(250) default '',
     direccion varchar(250),
-    role varchar(250) default 'user',
+    role varchar(250) default 'NORMAL_USER',
     enable boolean default true,
     google boolean default false
     

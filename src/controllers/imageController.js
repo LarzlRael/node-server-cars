@@ -18,7 +18,7 @@ controller.allCars = async (req, res) => {
     try {
         const conn = await getConnection();
         //? convirtiendo a decimal
-        const resultado = await conn.query("Select * from car ")
+        const resultado = await conn.query("SELECT * FROM car ORDER BY id DESC ")
 
         if (resultado.length == 0) {
             return res.json({ cars: [], rows: 'No hay registros' });
@@ -77,21 +77,19 @@ controller.insertNewCar = async (req, res) => {
     try {
         await fs.unlink(req.file.path, (err) => {
             if (err) throw err;
-            console.log('successfully deleted ');
+            console.log('successfully deleted');
 
         });
-        console.log('archivo elimnado pero guardado')
+        console.log('archivo eliminado pero guardado')
 
     } catch (error) {
         res.status(403).json({ error });
     }
 
-
     return res.status(200).json({ ok: 'Nuevo Carro insertado correctamente' })
 }
 
 //? funcion para buscar un carro por algun tipo de parametro
-
 
 controller.findCar = async (req, res) => {
     const { query = '', field } = req.params;
