@@ -23,7 +23,13 @@ create table user(
     role varchar(250) default 'NORMAL_USER',
     enable boolean default true,
     google boolean default false
-    
 );
 
---ALTER TABLE user ADD COLUMN google boolean default false;
+
+create table venta(
+    id_venta int primary key auto_increment,
+    id_car int,
+    id_user int,
+    precio int,
+    vendido_en timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

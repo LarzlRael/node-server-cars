@@ -8,6 +8,7 @@ const cors = require('cors');
 const cloud_routes = require('./routes/cloudinaryRoute')
 const user = require('./routes/userRoutes');
 const login = require('./routes/login');
+const venta = require('./routes/ventaRoutes');
 
 require('dotenv').config()
 
@@ -37,6 +38,9 @@ app.use(cloud_routes);
 // ? rutas para los usuarios
 app.use('/users', user);
 app.use('/login',login);
+app.use('/venta',venta);
+
+
 
 //? public files
 

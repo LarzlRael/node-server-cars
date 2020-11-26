@@ -17,7 +17,7 @@ controller.login = async (req, res) => {
     const conn = await getConnection();
 
     const { email, password } = req.body;
-    console.log(email, password)
+    
     const result = await conn.query('SELECT * FROM user WHERE email = ? AND enable = 1 limit 1', email);
 
     if (result.length !== 0) {
@@ -63,12 +63,13 @@ controller.login = async (req, res) => {
 }
 controller.getUser = async (req, res) => {
 
-    console.log(req.user.id_user)
+    
+    const {id_user} = req.user;
     try {
         const conn = await getConnection();
 
-        const user_db = await conn.query('SELECT * FROM user WHERE id_user = ? LIMIT 1', req.user.id_user).catch(e => console.log(e));
-        console.log(user_db[0])
+        const user_db = await conn.query('SELECT * FROM user WHERE id_user = ? LIMIT 1', id_user).catch(e => console.log(e));
+        //console.log(user_db[0]);
         delete user_db[0].password;
 
         return res.status(200).json({
@@ -93,8 +94,6 @@ controller.google = async (req, res) => {
     try {
         console.log('google user ')
         let googleUser = await verify(token).catch(e => console.log(e));
-
-
 
         result = await conn.query("SELECT * FROM user WHERE email = ? limit 1", googleUser.email)
             .catch(e => {
